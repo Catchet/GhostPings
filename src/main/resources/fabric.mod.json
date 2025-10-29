@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "ghostping",
+	"version": "${version}",
+	"name": "GhostPing",
+	"description": "Simple mod for pinging blocks and entities to other players",
+	"authors": [
+		"Catchet", "GhostPixels"
+	],
+	"contact": {
+		"homepage": "https://github.com/Catchet/GhostPing",
+		"sources": "https://github.com/Catchet/GhostPing"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/ghostping/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"me.ghostpixels.ghostping.GhostPing"
+		],
+		"client": [
+			"me.ghostpixels.ghostping.GhostPingClient"
+		]
+	},
+	"mixins": [
+		"ghostping.mixins.json",
+		{
+			"config": "ghostping.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.17.3",
+		"minecraft": "~1.21.10",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
