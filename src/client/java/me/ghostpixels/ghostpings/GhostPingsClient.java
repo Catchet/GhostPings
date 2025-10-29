@@ -1,8 +1,8 @@
-package me.ghostpixels.ghostping;
+package me.ghostpixels.ghostpings;
 
 import net.fabricmc.api.ClientModInitializer;
 
-public class GhostPingClient implements ClientModInitializer {
+public class GhostPingsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.

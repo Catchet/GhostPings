@@ -1,31 +1,31 @@
 {
 	"schemaVersion": 1,
-	"id": "ghostping",
+	"id": "ghostpings",
 	"version": "${version}",
-	"name": "GhostPing",
+	"name": "GhostPings",
 	"description": "Simple mod for pinging blocks and entities to other players",
 	"authors": [
 		"Catchet", "GhostPixels"
 	],
 	"contact": {
-		"homepage": "https://github.com/Catchet/GhostPing",
-		"sources": "https://github.com/Catchet/GhostPing"
+		"homepage": "https://github.com/Catchet/GhostPings",
+		"sources": "https://github.com/Catchet/GhostPings"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/ghostping/icon.png",
+	"icon": "assets/ghostpings/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"me.ghostpixels.ghostping.GhostPing"
+			"me.ghostpixels.ghostpings.GhostPings"
 		],
 		"client": [
-			"me.ghostpixels.ghostping.GhostPingClient"
+			"me.ghostpixels.ghostpings.GhostPingsClient"
 		]
 	},
 	"mixins": [
-		"ghostping.mixins.json",
+		"ghostpings.mixins.json",
 		{
-			"config": "ghostping.client.mixins.json",
+			"config": "ghostpings.client.mixins.json",
 			"environment": "client"
 		}
 	],

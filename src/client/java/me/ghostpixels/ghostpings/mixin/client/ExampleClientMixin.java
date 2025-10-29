@@ -1,4 +1,4 @@
-package me.ghostpixels.ghostping.mixin.client;
+package me.ghostpixels.ghostpings.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;

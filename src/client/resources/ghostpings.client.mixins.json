@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "me.ghostpixels.ghostping.mixin.client",
+	"package": "me.ghostpixels.ghostpings.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ExampleClientMixin"

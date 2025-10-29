@@ -22,7 +22,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"ghostping" {
+		"ghostpings" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
