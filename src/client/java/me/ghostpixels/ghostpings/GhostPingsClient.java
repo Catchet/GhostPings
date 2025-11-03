@@ -28,9 +28,11 @@ public class GhostPingsClient implements ClientModInitializer {
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (pingKeyBinding.wasPressed()) {
-				client.player.sendMessage(Text.literal("Ping key was pressed!"), false);
-			}
+            if (pingKeyBinding.wasPressed()) {
+                if (client.player != null) {
+                    client.player.sendMessage(Text.literal("Ping key was pressed!"), false);
+                }
+            }
 		});
 	}
 }
