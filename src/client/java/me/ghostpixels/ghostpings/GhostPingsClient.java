@@ -35,6 +35,8 @@ public class GhostPingsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
+        new CustomRenderPipeline().initialize();
+
 		// From Fabric wiki on custom keybinds
 		pingKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 			"key." + GhostPings.MOD_ID + ".ping", // The translation key of the keybinding's name
