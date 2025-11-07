@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.util.Util;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
@@ -90,8 +91,18 @@ public class CustomRenderPipeline {
         double x = pingLocation.getX() - size / 2;
         double y = pingLocation.getY() - size / 2;
         double z = pingLocation.getZ() - size / 2;
-        VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, .5f, 0f, 0.018f);
+        float startAlpha = 0.1f;
+        VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, .5f, 0f, startAlpha);
 
+        float currentTime = Util.getMeasuringTimeMs() / 1000f;
+        float alpha = startAlpha * (1 - (currentTime % 3f));
+        if (alpha > 0f) {
+            size += size * (currentTime % 1f);
+            x = pingLocation.getX() - size / 2;
+            y = pingLocation.getY() - size / 2;
+            z = pingLocation.getZ() - size / 2;
+            VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, 0f, 0f, alpha);
+        }
         matrices.pop();
     }
     // :::custom-pipelines:extraction-phase
