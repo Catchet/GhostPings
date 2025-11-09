@@ -1,4 +1,4 @@
-package me.ghostpixels.ghostpings;
+package me.ghostpixels.ghostpings.rendering;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -12,6 +12,7 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import me.ghostpixels.ghostpings.GhostPings;
 import net.minecraft.util.Util;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
