@@ -1,6 +1,7 @@
 package me.ghostpixels.ghostpings.hud;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Util;
@@ -98,7 +99,7 @@ public class HudRendering {
 //        if (Math.asin(nDotPX / (pLenX * nLenX)) < 0)
 //            vX = -vX;
 
-        int size = 10;
+        int size = 8;
 //        int midX = (windowWidth - size) / 2;
 //        int midY = (windowHeight - size) / 2;
 //
@@ -110,6 +111,19 @@ public class HudRendering {
 
         // Draw a square with the lerped color.
         // x1, y1, x2, y2, color
-        context.fill(posX, posY, posX + size, posY + size, 0x800000FF);
+        //context.fill(posX, posY, posX + size, posY + size, 0x800000FF);
+        // net.minecraft.client.network.PlayerListEntry
+        var matrices = context.getMatrices();
+        matrices.pushMatrix();
+        {
+            float scale = 1f; // 1.25f
+            matrices.scale(scale);
+//            matrices.scaleLocal(1.25f);
+            var playerInfo = MinecraftClient.getInstance().getNetworkHandler().getListedPlayerListEntries().iterator().next();
+            var texture = playerInfo.getSkinTextures().body().texturePath();
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, (int) (posX / scale), (int) (posY / scale), 8, 8, 8, 8, 64, 64, 0xC0FFFFFF);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, texture, (int) (posX / scale), (int) (posY / scale), 0, 0, 40, 8, 8, 8, 64, 64, 0xC0FFFFFF);
+        }
+        matrices.popMatrix();
     }
 }
