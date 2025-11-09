@@ -3,7 +3,7 @@
 	"package": "me.ghostpixels.ghostpings.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"ClientRenderMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
