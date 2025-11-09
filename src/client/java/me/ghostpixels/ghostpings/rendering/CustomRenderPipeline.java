@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import me.ghostpixels.ghostpings.GhostPings;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.RotationAxis;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
@@ -83,41 +84,51 @@ public class CustomRenderPipeline {
 
         assert matrices != null;
         matrices.push();
-        matrices.translate(-camera.x, -camera.y, -camera.z);
+        {
+            matrices.translate(-camera.x, -camera.y, -camera.z);
 
-        if (buffer == null) {
-            buffer = new BufferBuilder(allocator, FILLED_THROUGH_WALLS.getVertexFormatMode(), FILLED_THROUGH_WALLS.getVertexFormat());
-//            BufferBuilder buffer2 = new BufferBuilder(allocator, RenderPipeline.)
-//            buffer = new BufferBuilder(allocator, RenderPipelines.DEBUG_FILLED_BOX.getVertexFormatMode(), RenderPipelines.DEBUG_FILLED_BOX.getVertexFormat());
-        }
+            if (buffer == null) {
+                buffer = new BufferBuilder(allocator, FILLED_THROUGH_WALLS.getVertexFormatMode(), FILLED_THROUGH_WALLS.getVertexFormat());
+//              BufferBuilder buffer2 = new BufferBuilder(allocator, RenderPipeline.)
+//              buffer = new BufferBuilder(allocator, RenderPipelines.DEBUG_FILLED_BOX.getVertexFormatMode(), RenderPipelines.DEBUG_FILLED_BOX.getVertexFormat());
+            }
 
-        //VertexRendering.drawFilledBox(matrices, buffer, 0f, 100f, 0f, 1f, 101f, 1f, 0f, 1f, 0f, 0.5f);
-        VertexRendering.drawFilledBox(matrices, buffer, -160f, 65f, 200f, -159.5f, 65.5f, 200.5f, 0f, 1f, 0f, 0.02f);
-        double size = 1./2;
-        double x = pingLocation.getX() - size / 2;
-        double y = pingLocation.getY() - size / 2;
-        double z = pingLocation.getZ() - size / 2;
-        float startAlpha = 0.6f;
-        VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, .5f, 0f, startAlpha);
+//          VertexRendering.drawFilledBox(matrices, buffer, 0f, 100f, 0f, 1f, 101f, 1f, 0f, 1f, 0f, 0.5f);
+            VertexRendering.drawFilledBox(matrices, buffer, -160f, 65f, 200f, -159.5f, 65.5f, 200.5f, 0f, 1f, 0f, 0.02f);
+            double size = 1. / 2;
+            double x = pingLocation.getX() - size / 2;
+            double y = pingLocation.getY() - size / 2;
+            double z = pingLocation.getZ() - size / 2;
+            float startAlpha = 0.035f;
+            matrices.push();
+            {
+                float currentTime = Util.getMeasuringTimeMs() / 1000f;
+//              matrices.translate(0, 1.5, 0);
+                matrices.multiply(RotationAxis.POSITIVE_X.rotation(currentTime * .3f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotation(currentTime * .4f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
+                matrices.multiply(RotationAxis.POSITIVE_Z.rotation(currentTime * .5f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
+                VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, .5f, 0f, startAlpha);
 
-//        VertexRendering.drawBox(matrices.peek(), buffer, x, y + 1, z, x + 1, y + 2, z + 1, 0f, 0f, 1f, 0.2f);
-//        VoxelShape shape = VoxelShapes.cuboid(x, y + 1, z, x + 1, y + 2, z + 1);
-//        VertexRendering.drawOutline(matrices, buffer, shape, 0, 0, 0, 0x300000FF);
+//              VertexRendering.drawBox(matrices.peek(), buffer, x, y + 1, z, x + 1, y + 2, z + 1, 0f, 0f, 1f, 0.2f);
+//              VoxelShape shape = VoxelShapes.cuboid(x, y + 1, z, x + 1, y + 2, z + 1);
+//              VertexRendering.drawOutline(matrices, buffer, shape, 0, 0, 0, 0x300000FF);
 //
-//        VertexRendering.drawVector(matrices, buffer, pingLocation.toVector3f(), new Vec3d(3, 3, 3), 0xFFFFFFFF);
+//              VertexRendering.drawVector(matrices, buffer, pingLocation.toVector3f(), new Vec3d(3, 3, 3), 0xFFFFFFFF);
 //
-//        VertexRendering.drawSide(matrices.peek().getPositionMatrix(), buffer, Direction.NORTH, (float) x, (float) y, (float) z, (float) x + 1, (float) y + 1, (float) z, 1f, 1f, 1f, 1f);
+//              VertexRendering.drawSide(matrices.peek().getPositionMatrix(), buffer, Direction.NORTH, (float) x, (float) y, (float) z, (float) x + 1, (float) y + 1, (float) z, 1f, 1f, 1f, 1f);
+//
+//              context.modelViewMatrix
 
-//        context.modelViewMatrix
-
-        float currentTime = Util.getMeasuringTimeMs() / 1000f;
-        float alpha = startAlpha * (1 - (currentTime % 2f));
-        if (alpha > 0f) {
-            size += size * (currentTime % 1f);
-            x = pingLocation.getX() - size / 2;
-            y = pingLocation.getY() - size / 2;
-            z = pingLocation.getZ() - size / 2;
-            VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, 0f, 0f, alpha);
+                float alpha = 2 * startAlpha * (1 - (currentTime % 2f));
+                if (alpha > 0f) {
+                    size += size * (currentTime % 1f);
+                    x = pingLocation.getX() - size / 2;
+                    y = pingLocation.getY() - size / 2;
+                    z = pingLocation.getZ() - size / 2;
+                    VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, 0f, 0f, alpha);
+                }
+            }
+            matrices.pop();
         }
         matrices.pop();
     }
@@ -180,7 +191,7 @@ public class CustomRenderPipeline {
                 .write(RenderSystem.getModelViewMatrix(), COLOR_MODULATOR, new Vector3f(), RenderSystem.getTextureMatrix(), 1f);
         try (RenderPass renderPass = RenderSystem.getDevice()
                 .createCommandEncoder()
-                .createRenderPass(() -> GhostPings.MOD_ID + " example render pipeline rendering", client.getFramebuffer().getColorAttachmentView(), OptionalInt.empty(), client.getFramebuffer().getDepthAttachmentView(), OptionalDouble.empty())) {
+                .createRenderPass(() -> GhostPings.MOD_ID + " ping box pipeline rendering", client.getFramebuffer().getColorAttachmentView(), OptionalInt.empty(), client.getFramebuffer().getDepthAttachmentView(), OptionalDouble.empty())) {
             renderPass.setPipeline(pipeline);
 
             RenderSystem.bindDefaultUniforms(renderPass);
