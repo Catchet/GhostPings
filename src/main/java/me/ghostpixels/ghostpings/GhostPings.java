@@ -3,6 +3,7 @@ package me.ghostpixels.ghostpings;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.network.RegistryByteBuf;
@@ -27,7 +28,7 @@ public class GhostPings implements ModInitializer {
 
 	// From Fabric Docs on networking
 	public record SummonLightningS2CPayload(BlockPos pos) implements CustomPayload {
-		public static final Identifier SUMMON_LIGHTNING_PAYLOAD_ID = Identifier.of(GhostPings.MOD_ID, "summon_lightning");
+		public static final Identifier SUMMON_LIGHTNING_PAYLOAD_ID = Identifier.of(GhostPings.MOD_ID, "summon_lightning_s2c");
 		public static final CustomPayload.Id<SummonLightningS2CPayload> ID = new CustomPayload.Id<>(SUMMON_LIGHTNING_PAYLOAD_ID);
 		public static final PacketCodec<RegistryByteBuf, SummonLightningS2CPayload> CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, SummonLightningS2CPayload::pos, SummonLightningS2CPayload::new);
 
@@ -36,6 +37,17 @@ public class GhostPings implements ModInitializer {
 			return ID;
 		}
 	}
+
+    public record SummonLightningC2SPayload(BlockPos pos) implements CustomPayload {
+        public static final Identifier SUMMON_LIGHTNING_PAYLOAD_ID = Identifier.of(GhostPings.MOD_ID, "summon_lightning_c2s");
+        public static final CustomPayload.Id<SummonLightningC2SPayload> ID = new CustomPayload.Id<>(SUMMON_LIGHTNING_PAYLOAD_ID);
+        public static final PacketCodec<RegistryByteBuf, SummonLightningC2SPayload> CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, SummonLightningC2SPayload::pos, SummonLightningC2SPayload::new);
+
+        @Override
+        public Id<? extends CustomPayload> getId(){
+            return ID;
+        }
+    }
 
 	@Override
 	public void onInitialize() {
@@ -46,19 +58,14 @@ public class GhostPings implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		PayloadTypeRegistry.playS2C().register(SummonLightningS2CPayload.ID, SummonLightningS2CPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(SummonLightningC2SPayload.ID, SummonLightningC2SPayload.CODEC);
 
+        ServerPlayNetworking.registerGlobalReceiver(SummonLightningC2SPayload.ID, (payload_incoming, context) -> {
+            if (payload_incoming.pos().getY() % 2 != 0) return; // For debugging
 
-		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
-			BlockState state = world.getBlockState(pos);
-
-			if (!player.isSpectator() && player.getMainHandStack().isEmpty() && state.isToolRequired() && world instanceof ServerWorld serverWorld) {
-				player.damage(serverWorld, world.getDamageSources().generic(), 1.0F);
-				
-				SummonLightningS2CPayload payload = new SummonLightningS2CPayload(player.getBlockPos());
-				ServerPlayNetworking.send((ServerPlayerEntity) player, payload);
-			}
-
-			return ActionResult.PASS;
-		});
+            SummonLightningS2CPayload payload_outgoing = new SummonLightningS2CPayload(payload_incoming.pos());
+            for (ServerPlayerEntity player : PlayerLookup.world(context.player().getEntityWorld()))
+                ServerPlayNetworking.send(player, payload_outgoing);
+        });
 	}
 }

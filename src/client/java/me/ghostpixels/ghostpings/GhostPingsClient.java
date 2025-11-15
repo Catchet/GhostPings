@@ -1,6 +1,7 @@
 package me.ghostpixels.ghostpings;
 
 import me.ghostpixels.ghostpings.GhostPings.SummonLightningS2CPayload;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -54,7 +55,12 @@ public class GhostPingsClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (pingKeyBinding.wasPressed()) {
                 if (client.player != null) {
-                    client.player.sendMessage(Text.literal("Ping key was pressed!"), false);
+                    client.player.sendMessage(Text.literal("Ping key was pressed! (" + Util.getMeasuringTimeMs() + ")"), false);
+                    BlockPos pos = new BlockPos(client.player.getBlockPos());
+                    if (pos.getY() % 2 == 0) { // For debugging
+                        GhostPings.SummonLightningC2SPayload payload = new GhostPings.SummonLightningC2SPayload(pos);
+                        ClientPlayNetworking.send(payload);
+                    }
                 }
             }
         });
