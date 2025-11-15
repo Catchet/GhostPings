@@ -61,10 +61,12 @@ public class GhostPings implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(SummonLightningC2SPayload.ID, SummonLightningC2SPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(SummonLightningC2SPayload.ID, (payload_incoming, context) -> {
-            if (payload_incoming.pos().getY() % 2 != 0) return; // For debugging
+            BlockPos pos = payload_incoming.pos();
+            if (pos.getY() % 2 != 0) return; // For debugging
 
-            SummonLightningS2CPayload payload_outgoing = new SummonLightningS2CPayload(payload_incoming.pos());
-            for (ServerPlayerEntity player : PlayerLookup.world(context.player().getEntityWorld()))
+            SummonLightningS2CPayload payload_outgoing = new SummonLightningS2CPayload(pos);
+            for (ServerPlayerEntity player :
+                    PlayerLookup.tracking(context.player().getEntityWorld(), pos))
                 ServerPlayNetworking.send(player, payload_outgoing);
         });
 	}
