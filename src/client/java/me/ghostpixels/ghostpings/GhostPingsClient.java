@@ -1,7 +1,7 @@
 package me.ghostpixels.ghostpings;
 
-import me.ghostpixels.ghostpings.GhostPings.SummonLightningS2CPayload;
-import net.minecraft.util.Util;
+import me.ghostpixels.ghostpings.network.PacketPayloads.SummonLightningS2CPayload;
+import me.ghostpixels.ghostpings.network.PacketPayloads.SummonLightningC2SPayload;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -17,6 +17,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 public class GhostPingsClient implements ClientModInitializer {
 
@@ -58,7 +59,7 @@ public class GhostPingsClient implements ClientModInitializer {
                     client.player.sendMessage(Text.literal("Ping key was pressed! (" + Util.getMeasuringTimeMs() + ")"), false);
                     BlockPos pos = new BlockPos(client.player.getBlockPos());
                     if (pos.getY() % 2 == 0) { // For debugging
-                        GhostPings.SummonLightningC2SPayload payload = new GhostPings.SummonLightningC2SPayload(pos);
+                        SummonLightningC2SPayload payload = new SummonLightningC2SPayload(pos);
                         ClientPlayNetworking.send(payload);
                     }
                 }
