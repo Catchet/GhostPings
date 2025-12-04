@@ -1,7 +1,6 @@
 package me.ghostpixels.ghostpings;
 
-import org.lwjgl.glfw.GLFW;
-
+import me.ghostpixels.ghostpings.core.Ping;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -9,11 +8,15 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import java.util.ArrayList;
+import org.lwjgl.glfw.GLFW;
 
 public class GhostPingsClient implements ClientModInitializer {
 
 	private static KeyBinding pingKeyBinding;
 	private static final KeyBinding.Category PING_KEY_CATEGORY = KeyBinding.Category.create(Identifier.of(GhostPings.MOD_ID, "pings"));
+
+    public static final ArrayList<Ping> ACTIVE_PINGS = new ArrayList<>();
 
 	@Override
 	public void onInitializeClient() {
@@ -31,6 +34,8 @@ public class GhostPingsClient implements ClientModInitializer {
             if (pingKeyBinding.wasPressed()) {
                 if (client.player != null) {
                     client.player.sendMessage(Text.literal("Ping key was pressed!"), false);
+                    Ping newPing = new Ping(client.player.getEntityPos(), client.getRenderTime(), client.player.getUuid());
+                    ACTIVE_PINGS.add(newPing);
                 }
             }
 		});
