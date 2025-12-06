@@ -1,5 +1,6 @@
 package me.ghostpixels.ghostpings;
 
+import me.ghostpixels.ghostpings.network.PacketPayloads.ChannelRegistrationC2SPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingBroadcastS2CPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingCreatedC2SPayload;
 
@@ -29,8 +30,9 @@ public class GhostPings implements ModInitializer {
 
         LOGGER.info("Hello Fabric world!");
 
-        PayloadTypeRegistry.playS2C().register(PingBroadcastS2CPayload.ID, PingBroadcastS2CPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(ChannelRegistrationC2SPayload.ID, ChannelRegistrationC2SPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(PingCreatedC2SPayload.ID, PingCreatedC2SPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(PingBroadcastS2CPayload.ID, PingBroadcastS2CPayload.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(PingCreatedC2SPayload.ID, (payloadIncoming, context) -> {
             Vec3d pos = payloadIncoming.pos();
