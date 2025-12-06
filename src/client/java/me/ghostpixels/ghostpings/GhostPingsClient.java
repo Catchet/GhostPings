@@ -39,8 +39,8 @@ public class GhostPingsClient implements ClientModInitializer {
                     "Received packet! (" + Util.getMeasuringTimeMs() + ")" +
                     "\nSent by: " + payload.playerUuid() +
                     "\nPos: " + payload.pos().toString() +
-                    "\nPrimary colour: " + new ColorCode(payload.argb_primary()) +
-                    "\nSecondary colour: " + new ColorCode(payload.argb_secondary())
+                    "\nPrimary colour: " + new ColorCode(payload.argbPrimary()) +
+                    "\nSecondary colour: " + new ColorCode(payload.argbSecondary())
             ).withColor(Colors.GRAY), false);
         });
 

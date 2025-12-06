@@ -32,21 +32,21 @@ public class GhostPings implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(PingBroadcastS2CPayload.ID, PingBroadcastS2CPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(PingCreatedC2SPayload.ID, PingCreatedC2SPayload.CODEC);
 
-        ServerPlayNetworking.registerGlobalReceiver(PingCreatedC2SPayload.ID, (payload_incoming, context) -> {
-            Vec3d pos = payload_incoming.pos();
+        ServerPlayNetworking.registerGlobalReceiver(PingCreatedC2SPayload.ID, (payloadIncoming, context) -> {
+            Vec3d pos = payloadIncoming.pos();
             if (pos.getY() % 2 != 0) return; // For debugging
 
-            PingBroadcastS2CPayload payload_outgoing = new PingBroadcastS2CPayload(
+            PingBroadcastS2CPayload payloadOutgoing = new PingBroadcastS2CPayload(
                     context.player().getUuid(),
-                    pos, payload_incoming.argb_primary(),
-                    payload_incoming.argb_secondary()
+                    pos, payloadIncoming.argbPrimary(),
+                    payloadIncoming.argbSecondary()
             );
             var trackingPlayers = PlayerLookup.tracking(
                 context.player().getEntityWorld(),
                 new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())
             );
             for (ServerPlayerEntity player : trackingPlayers)
-                ServerPlayNetworking.send(player, payload_outgoing);
+                ServerPlayNetworking.send(player, payloadOutgoing);
         });
     }
 }
