@@ -49,17 +49,24 @@ public class GhostPings implements ModInitializer {
             Vec3d pos = payloadIncoming.pos();
             if (pos.getY() % 2 != 0) return; // For debugging
 
+            var sender = context.player().getUuid();
+            var senderChannel = USER_CHANNELS.getOrDefault(sender, "");
+
             PingBroadcastS2CPayload payloadOutgoing = new PingBroadcastS2CPayload(
-                    context.player().getUuid(),
-                    pos, payloadIncoming.argbPrimary(),
+                    sender,
+                    pos,
+                    payloadIncoming.argbPrimary(),
                     payloadIncoming.argbSecondary()
             );
             var trackingPlayers = PlayerLookup.tracking(
                 context.player().getEntityWorld(),
                 new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())
             );
-            for (ServerPlayerEntity player : trackingPlayers)
-                ServerPlayNetworking.send(player, payloadOutgoing);
+            for (ServerPlayerEntity targetPlayer : trackingPlayers) {
+                var targetChannel = USER_CHANNELS.getOrDefault(targetPlayer.getUuid(), "");
+                if (senderChannel.equals(targetChannel))
+                    ServerPlayNetworking.send(targetPlayer, payloadOutgoing);
+            }
         });
     }
 }
