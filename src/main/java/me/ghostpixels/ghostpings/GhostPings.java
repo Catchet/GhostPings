@@ -14,6 +14,9 @@ import net.minecraft.util.math.Vec3d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class GhostPings implements ModInitializer {
     public static final String MOD_ID = "ghostpings";
 
@@ -21,6 +24,8 @@ public class GhostPings implements ModInitializer {
     // It is considered best practice to use your mod id as the logger's name.
     // That way, it's clear which mod wrote info, warnings, and errors.
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+    public static final HashMap<UUID, String> USER_CHANNELS = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -33,6 +38,12 @@ public class GhostPings implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(ChannelRegistrationC2SPayload.ID, ChannelRegistrationC2SPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(PingCreatedC2SPayload.ID, PingCreatedC2SPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(PingBroadcastS2CPayload.ID, PingBroadcastS2CPayload.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(ChannelRegistrationC2SPayload.ID, (payload, context) -> {
+            var sender = context.player().getUuid();
+            var channel = payload.channel();
+            USER_CHANNELS.put(sender, channel);
+        });
 
         ServerPlayNetworking.registerGlobalReceiver(PingCreatedC2SPayload.ID, (payloadIncoming, context) -> {
             Vec3d pos = payloadIncoming.pos();
