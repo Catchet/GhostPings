@@ -63,6 +63,7 @@ public class GhostPings implements ModInitializer {
                 new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())
             );
             for (ServerPlayerEntity targetPlayer : trackingPlayers) {
+                if (sender.equals(targetPlayer.getUuid())) continue;
                 var targetChannel = USER_CHANNELS.getOrDefault(targetPlayer.getUuid(), "");
                 if (senderChannel.equals(targetChannel))
                     ServerPlayNetworking.send(targetPlayer, payloadOutgoing);
