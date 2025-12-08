@@ -1,5 +1,6 @@
 package me.ghostpixels.ghostpings;
 
+import me.ghostpixels.ghostpings.network.PacketPayloads.ChannelRegistrationC2SPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingBroadcastS2CPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingCreatedC2SPayload;
 
@@ -64,5 +65,9 @@ public class GhostPingsClient implements ClientModInitializer {
                 }
             }
         });
+
+        // TODO: Add server specific channels
+        // var payload = new ChannelRegistrationC2SPayload("channel1");
+        // ClientPlayNetworking.send(payload);
 	}
 }
