@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.UUID;
 
 public class GhostPings implements ModInitializer {
@@ -26,6 +27,9 @@ public class GhostPings implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final HashMap<UUID, String> USER_CHANNELS = new HashMap<>();
+    public static final HashMap<UUID, LinkedList<Long>> USER_PING_HISTORY = new HashMap<>();
+    public static final Integer MAX_ACTIVE_PINGS = 3;
+    public static final Integer PING_COOLDOWN_SECONDS = 5;
 
     @Override
     public void onInitialize() {
@@ -50,6 +54,23 @@ public class GhostPings implements ModInitializer {
             if (pos.getY() % 2 != 0) return; // For debugging
 
             var sender = context.player().getUuid();
+            { // Handling cooldowns
+                var now = System.currentTimeMillis();
+                if (!USER_PING_HISTORY.containsKey(sender)) {
+                    USER_PING_HISTORY.put(sender, new LinkedList<>());
+                }
+                var activePings = USER_PING_HISTORY.get(sender);
+                var oldestPing = activePings.getFirst();
+                var timeDelta = now - oldestPing;
+                if (timeDelta > PING_COOLDOWN_SECONDS) {
+                    activePings.removeFirst();
+                }
+                if (activePings.size() < MAX_ACTIVE_PINGS) {
+                    activePings.add(now);
+                } else {
+                    return;
+                }
+            }
             var senderChannel = USER_CHANNELS.getOrDefault(sender, "");
 
             PingBroadcastS2CPayload payloadOutgoing = new PingBroadcastS2CPayload(
