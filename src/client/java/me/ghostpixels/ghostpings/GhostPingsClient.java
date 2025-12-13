@@ -65,23 +65,13 @@ public class GhostPingsClient implements ClientModInitializer {
                     switch(hit.getType()) {
                         case HitResult.Type.MISS:
                             //nothing near enough
-                            client.player.sendMessage(Text.literal("Missed..."), true);
+                            client.player.sendMessage(Text.literal("Nothing in range..."), true);
                             break;
                         case HitResult.Type.BLOCK:
-                            BlockHitResult blockHit = (BlockHitResult) hit;
-                            BlockPos blockPos = blockHit.getBlockPos();
-                            BlockState blockState = client.world.getBlockState(blockPos);
-                            Block block = blockState.getBlock();
-
-                            client.player.sendMessage(Text.literal("Block is: " + block.toString()), true);
                             pingLocation = hit.getPos();
                             WorldRenderEvents.BEFORE_TRANSLUCENT.register(CustomRenderPipeline.getInstance()::extractAndDrawWaypoint);
                             break;
                         case HitResult.Type.ENTITY:
-                            EntityHitResult entityHit = (EntityHitResult) hit;
-                            Entity entity = entityHit.getEntity();
-
-                            client.player.sendMessage(Text.literal("Entity is: " + entity.toString()), true);
                             break;
                     }
 
