@@ -62,8 +62,6 @@ public class GhostPingsClient implements ClientModInitializer {
             }
         });
 
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.of(GhostPings.MOD_ID, "before_chat"), HudRendering::render);
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.of(GhostPings.MOD_ID, "ping"), HudRendering::render2);
-        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.of(GhostPings.MOD_ID, "ping_hud"), HudRendering::render3);
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, Identifier.of(GhostPings.MOD_ID, "ping_hud"), HudRendering::render);
     }
 }
