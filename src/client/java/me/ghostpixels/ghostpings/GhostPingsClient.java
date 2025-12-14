@@ -4,22 +4,22 @@ import me.ghostpixels.ghostpings.core.Ping;
 import me.ghostpixels.ghostpings.network.PacketPayloads.ChannelRegistrationC2SPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingBroadcastS2CPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingCreatedC2SPayload;
-
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.ColorCode;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
-import java.util.ArrayList;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
 
 public class GhostPingsClient implements ClientModInitializer {
 
@@ -28,11 +28,11 @@ public class GhostPingsClient implements ClientModInitializer {
 
     public static final ArrayList<Ping> ACTIVE_PINGS = new ArrayList<>();
 
-	@Override
-	public void onInitializeClient() {
-		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
+    @Override
+    public void onInitializeClient() {
+        // This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-		ClientPlayNetworking.registerGlobalReceiver(PingBroadcastS2CPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PingBroadcastS2CPayload.ID, (payload, context) -> {
             ClientWorld world = context.client().world;
 
             if (world == null) {
@@ -41,10 +41,10 @@ public class GhostPingsClient implements ClientModInitializer {
 
             context.client().player.sendMessage(Text.literal(
                     "Received packet! (" + Util.getMeasuringTimeMs() + ")" +
-                    "\nSent by: " + payload.playerUuid() +
-                    "\nPos: " + payload.pos().toString() +
-                    "\nPrimary colour: " + new ColorCode(payload.argbPrimary()) +
-                    "\nSecondary colour: " + new ColorCode(payload.argbSecondary())
+                            "\nSent by: " + payload.playerUuid() +
+                            "\nPos: " + payload.pos().toString() +
+                            "\nPrimary colour: " + new ColorCode(payload.argbPrimary()) +
+                            "\nSecondary colour: " + new ColorCode(payload.argbSecondary())
             ).withColor(Colors.GRAY), false);
         });
 
@@ -73,5 +73,5 @@ public class GhostPingsClient implements ClientModInitializer {
         // TODO: Add server specific channels
         var payload = new ChannelRegistrationC2SPayload("channel1");
         ClientPlayNetworking.send(payload);
-	}
+    }
 }

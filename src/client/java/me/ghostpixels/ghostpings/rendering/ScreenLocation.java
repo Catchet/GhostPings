@@ -24,8 +24,8 @@ public class ScreenLocation {
 
     public boolean isWithinBounds(Vec2f topLeft, Vec2f bottomRight) {
         return
-            (topLeft.x <= x && x <= bottomRight.x)
-            &&
-            (topLeft.y <= y && y <= bottomRight.y);
+                (topLeft.x <= x && x <= bottomRight.x)
+                        &&
+                        (topLeft.y <= y && y <= bottomRight.y);
     }
 }

@@ -32,13 +32,13 @@ public class Ping {
         final int windowWidth = window.getWidth();
         final int windowHeight = window.getHeight();
         return
-            screenLocation != null
-            &&
-            screenLocation.isInFront()
-            &&
-            screenLocation.isWithinBounds(
-                    new Vec2f(0 - hudRenderSize / 2f, 0 - hudRenderSize / 2f),
-                    new Vec2f(windowWidth + hudRenderSize / 2f, windowHeight + hudRenderSize / 2f)
-            );
+                screenLocation != null
+                        &&
+                        screenLocation.isInFront()
+                        &&
+                        screenLocation.isWithinBounds(
+                                new Vec2f(0 - hudRenderSize / 2f, 0 - hudRenderSize / 2f),
+                                new Vec2f(windowWidth + hudRenderSize / 2f, windowHeight + hudRenderSize / 2f)
+                        );
     }
 }

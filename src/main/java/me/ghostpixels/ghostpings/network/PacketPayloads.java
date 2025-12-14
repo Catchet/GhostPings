@@ -37,12 +37,13 @@ public class PacketPayloads {
         );
 
         @Override
-        public Id<? extends CustomPayload> getId(){
+        public Id<? extends CustomPayload> getId() {
             return ID;
         }
     }
 
-    public record PingBroadcastS2CPayload(UUID playerUuid, Vec3d pos, int argbPrimary, int argbSecondary) implements CustomPayload {
+    public record PingBroadcastS2CPayload(UUID playerUuid, Vec3d pos, int argbPrimary,
+                                          int argbSecondary) implements CustomPayload {
         public static final Identifier PING_BROADCAST_PAYLOAD_ID = Identifier.of(GhostPings.MOD_ID, "ping_broadcast_s2c");
         public static final CustomPayload.Id<PingBroadcastS2CPayload> ID = new CustomPayload.Id<>(PING_BROADCAST_PAYLOAD_ID);
         public static final PacketCodec<RegistryByteBuf, PingBroadcastS2CPayload> CODEC = PacketCodec.tuple(
@@ -55,7 +56,7 @@ public class PacketPayloads {
 
 
         @Override
-        public Id<? extends CustomPayload> getId(){
+        public Id<? extends CustomPayload> getId() {
             return ID;
         }
     }

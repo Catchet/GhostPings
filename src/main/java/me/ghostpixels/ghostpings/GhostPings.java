@@ -3,7 +3,6 @@ package me.ghostpixels.ghostpings;
 import me.ghostpixels.ghostpings.network.PacketPayloads.ChannelRegistrationC2SPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingBroadcastS2CPayload;
 import me.ghostpixels.ghostpings.network.PacketPayloads.PingCreatedC2SPayload;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -80,8 +79,8 @@ public class GhostPings implements ModInitializer {
                     payloadIncoming.argbSecondary()
             );
             var trackingPlayers = PlayerLookup.tracking(
-                context.player().getEntityWorld(),
-                new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())
+                    context.player().getEntityWorld(),
+                    new BlockPos((int) pos.getX(), (int) pos.getY(), (int) pos.getZ())
             );
             for (ServerPlayerEntity targetPlayer : trackingPlayers) {
                 if (sender.equals(targetPlayer.getUuid())) continue;
