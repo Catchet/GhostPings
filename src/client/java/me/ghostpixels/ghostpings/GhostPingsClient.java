@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
@@ -29,6 +28,7 @@ public class GhostPingsClient implements ClientModInitializer {
     public void onInitializeClient() {
         // This entrypoint is suitable for setting up client-specific logic, such as rendering.
         new CustomRenderPipeline().initialize();
+        // WorldRenderEvents.BEFORE_TRANSLUCENT.register(CustomRenderPipeline.getInstance()::extractAndDrawPing);
 
         // From Fabric wiki on custom keybinds
         pingKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -52,7 +52,6 @@ public class GhostPingsClient implements ClientModInitializer {
                             break;
                         case HitResult.Type.BLOCK:
                             pingLocation = hit.getPos();
-                            WorldRenderEvents.BEFORE_TRANSLUCENT.register(CustomRenderPipeline.getInstance()::extractAndDrawWaypoint);
                             break;
                         case HitResult.Type.ENTITY:
                             // Can't seem to get here
