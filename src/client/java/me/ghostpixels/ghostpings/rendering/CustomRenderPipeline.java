@@ -1,8 +1,5 @@
 package me.ghostpixels.ghostpings.rendering;
 
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.BlendFunction;
@@ -13,27 +10,24 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import me.ghostpixels.ghostpings.GhostPings;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.MappableRingBuffer;
+import net.minecraft.client.gl.RenderPipelines;
+import net.minecraft.client.render.*;
+import net.minecraft.client.util.BufferAllocator;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.system.MemoryUtil;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.MappableRingBuffer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BuiltBuffer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.VertexRendering;
-import net.minecraft.client.util.BufferAllocator;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 import static me.ghostpixels.ghostpings.GhostPings.LOGGER;
 import static me.ghostpixels.ghostpings.GhostPingsClient.pingLocation;
@@ -67,18 +61,18 @@ public class CustomRenderPipeline {
 
     public void initialize() {
         instance = this;
-        WorldRenderEvents.AFTER_ENTITIES.register(this::extractAndDrawWaypoint);
+        WorldRenderEvents.AFTER_ENTITIES.register(this::extractAndDrawPing);
 
         LOGGER.info("Initialized World Rendering Pipeline!");
     }
 
-    public void extractAndDrawWaypoint(WorldRenderContext context) {
-        renderWaypoint(context);
+    public void extractAndDrawPing(WorldRenderContext context) {
+        renderPing(context);
         drawFilledThroughWalls(MinecraftClient.getInstance(), FILLED_THROUGH_WALLS);
     }
 
     // :::custom-pipelines:extraction-phase
-    private void renderWaypoint(WorldRenderContext context) {
+    private void renderPing(WorldRenderContext context) {
         MatrixStack matrices = context.matrices();
         Vec3d camera = context.worldState().cameraRenderState.pos;
 
@@ -89,12 +83,8 @@ public class CustomRenderPipeline {
 
             if (buffer == null) {
                 buffer = new BufferBuilder(allocator, FILLED_THROUGH_WALLS.getVertexFormatMode(), FILLED_THROUGH_WALLS.getVertexFormat());
-//              BufferBuilder buffer2 = new BufferBuilder(allocator, RenderPipeline.)
-//              buffer = new BufferBuilder(allocator, RenderPipelines.DEBUG_FILLED_BOX.getVertexFormatMode(), RenderPipelines.DEBUG_FILLED_BOX.getVertexFormat());
             }
 
-//          VertexRendering.drawFilledBox(matrices, buffer, 0f, 100f, 0f, 1f, 101f, 1f, 0f, 1f, 0f, 0.5f);
-            VertexRendering.drawFilledBox(matrices, buffer, -160f, 65f, 200f, -159.5f, 65.5f, 200.5f, 0f, 1f, 0f, 0.02f);
             double size = 1. / 2;
             double x = pingLocation.getX() - size / 2;
             double y = pingLocation.getY() - size / 2;
@@ -103,21 +93,10 @@ public class CustomRenderPipeline {
             matrices.push();
             {
                 float currentTime = Util.getMeasuringTimeMs() / 1000f;
-//              matrices.translate(0, 1.5, 0);
                 matrices.multiply(RotationAxis.POSITIVE_X.rotation(currentTime * .3f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
                 matrices.multiply(RotationAxis.POSITIVE_Y.rotation(currentTime * .4f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
                 matrices.multiply(RotationAxis.POSITIVE_Z.rotation(currentTime * .5f), (float) pingLocation.getX(), (float) pingLocation.getY(), (float) pingLocation.getZ());
                 VertexRendering.drawFilledBox(matrices, buffer, x, y, z, x + size, y + size, z + size, 1f, .5f, 0f, startAlpha);
-
-//              VertexRendering.drawBox(matrices.peek(), buffer, x, y + 1, z, x + 1, y + 2, z + 1, 0f, 0f, 1f, 0.2f);
-//              VoxelShape shape = VoxelShapes.cuboid(x, y + 1, z, x + 1, y + 2, z + 1);
-//              VertexRendering.drawOutline(matrices, buffer, shape, 0, 0, 0, 0x300000FF);
-//
-//              VertexRendering.drawVector(matrices, buffer, pingLocation.toVector3f(), new Vec3d(3, 3, 3), 0xFFFFFFFF);
-//
-//              VertexRendering.drawSide(matrices.peek().getPositionMatrix(), buffer, Direction.NORTH, (float) x, (float) y, (float) z, (float) x + 1, (float) y + 1, (float) z, 1f, 1f, 1f, 1f);
-//
-//              context.modelViewMatrix
 
                 float alpha = 2 * startAlpha * (1 - (currentTime % 2f));
                 if (alpha > 0f) {
@@ -156,7 +135,7 @@ public class CustomRenderPipeline {
 
         // Initialize or resize the vertex buffer as needed
         if (vertexBuffer == null || vertexBuffer.size() < vertexBufferSize) {
-            vertexBuffer = new MappableRingBuffer(() -> GhostPings.MOD_ID + " example render pipeline", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
+            vertexBuffer = new MappableRingBuffer(() -> GhostPings.MOD_ID + " render pipeline", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
         }
 
         // Copy vertex data into the vertex buffer
